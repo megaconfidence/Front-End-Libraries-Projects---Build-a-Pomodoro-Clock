@@ -10,10 +10,35 @@
   display: flex;
   justify-content: space-between;
 }
-.break__lenght, .session__lenght {
+.app__timer {
+  display: flex;
+  justify-content: center;
+}
+.break__lenght,
+.session__lenght {
   width: fit-content;
 }
-.break__lenght__io, .session__lenght__io {
-  display:  flex;
+.break__lenght__io,
+.session__lenght__io {
+  display: flex;
   justify-content: center;
+  align-items: center;
+}
+.break__length__ctrl,
+.session__length__ctrl {
+  padding: 3px;
+  cursor: pointer;
+  font-size: 2em;
+  -webkit-user-select: none;
+}
+.timer__controls {
+  padding: 3px;
+  display: flex;
+  cursor: pointer;
+  font-size: 1.5em;
+  -webkit-user-select: none;
+  justify-content: space-between;
+}
+.timer__controls__startstop .stop {
+  font-family: u2000;
 }
