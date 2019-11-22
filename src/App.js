@@ -8,6 +8,7 @@ function App() {
   const [app, setApp] = useState({
     breakLength: 5,
     sessionLength: 25,
+    // time: 5,
     time: 1500,
     isTimeStopped: false,
     isBreak: true,
@@ -84,7 +85,7 @@ function App() {
       }
     }, [delay]);
   };
-  
+
   useInterval(() => {
     if (app.time === 0) {
       setApp(app => ({ ...app, delay: null, isBreak: !app.isBreak }));
@@ -98,10 +99,8 @@ function App() {
     audioEle.current.play();
 
     if (app.isBreak) {
-      console.log(`it's break time`);
       setApp(app => ({ ...app, time: app.breakLength * 60, delay: 1000 }));
     } else {
-      console.log(`it's not break time`);
       setApp(app => ({ ...app, time: app.sessionLength * 60, delay: 1000 }));
     }
   };
@@ -119,23 +118,42 @@ function App() {
     }
   };
 
+  const sessionHero = (
+    <>
+      {' '}
+      <img className='app__hero__image' src='./clock1.png' alt='clock' />
+    </>
+  );
+  const breakHero = (
+    <>
+      {' '}
+      <img className='app__hero__image' src='./clock2.png' alt='clock' />
+    </>
+  );
+
   return (
-    <div className='app'>
-      <div className='app__controls'>
-        <BreakLength length={app.breakLength} onClick={handleBreakClick} />
-        <SessionLength
-          length={app.sessionLength}
-          onClick={handleSessionClick}
-        />
+    <div className={`app ${app.isBreak ? 'app--session' : 'app--break'}`}>
+      <div className='app__container'>
+        <h1>Pomodoro Clock <a href='https://github.com/Confidence-Okoghenun/Front-End-Libraries-Projects---Build-a-Pomodoro-Clock'>(GitHub)</a> </h1>
+        <div className='app__hero'>{app.isBreak ? sessionHero : breakHero}</div>
+        <div className='app__timer'>
+          <Timer
+            reset={handleReset}
+            time={app.time}
+            startStop={handleStartStop}
+            isBreak={app.isBreak}
+            isRunning={app.isTimerRunning}
+          />
+        </div>
+        <div className='app__control'>
+          <BreakLength length={app.breakLength} onClick={handleBreakClick} />
+          <SessionLength
+            length={app.sessionLength}
+            onClick={handleSessionClick}
+          />
+        </div>
       </div>
-      <div className='app__timer'>
-        <Timer
-          reset={handleReset}
-          time={app.time}
-          startStop={handleStartStop}
-          isBreak={app.isBreak}
-        />
-      </div>
+      <p className='inspire'>Design inspired by @rdnkta</p>
       <audio
         id='beep'
         preload='auto'

@@ -1,44 +1,109 @@
+body {
+}
 .app {
-  width: 500px;
-  margin: 0 auto;
-  padding: 10px;
-  margin-top: 300px;
-  border-radius: 3px;
-  border: 1px solid black;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  color: white;
+  text-align: center;
+  position: absolute;
 }
-.app__controls {
+a {
+  color: white;
+  font-size: 0.8em;
+}
+p.inspire {
+  bottom: 0;
+  width: 100vw;
+  font-size: 0.5em;
+  position: absolute;
+}
+.app__container {
+  height: 450px;
   display: flex;
-  justify-content: space-between;
+  padding-top: 50px;
+  flex-direction: column;
+  justify-content: space-around;
 }
-.app__timer {
+.app--session {
+  background-color: #8644c4;
+}
+.app--break {
+  background-color: #dd8838;
+}
+.app__hero {
+  text-align: center;
+}
+.app__hero__image {
+  width: 100px;
+}
+.app__control {
   display: flex;
   justify-content: center;
 }
+.app__timer {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}
+
+.timer__display {
+  display: flex;
+  font-size: 3em;
+  margin: 8px 0 4px;
+  align-items: center;
+  justify-content: center;
+}
+.timer__controls__startstop,
+.timer__controls__reset {
+  margin: 0 5px;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 2px solid white;
+  -webkit-user-select: none;
+}
+
 .break__lenght,
 .session__lenght {
+  margin: 0 20px;
   width: fit-content;
+}
+.break__label,
+.session__label {
+  margin-bottom: 10px;
 }
 .break__lenght__io,
 .session__lenght__io {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+}
+.break__length__display,
+.session__length__display {
+  margin: 0 10px;
+  font-size: 1.3em;
 }
 .break__length__ctrl,
 .session__length__ctrl {
-  padding: 3px;
   cursor: pointer;
-  font-size: 2em;
+  border-radius: 8px;
+  border: 2px solid white;
   -webkit-user-select: none;
+}
+.break__length__ctrl--left,
+.session__length__ctrl--left {
+  padding: 0 12px;
+  font-size: 1.5em;
+}
+.break__length__ctrl--right,
+.session__length__ctrl--right {
+  padding: 5px 11px;
+  font-weight: bold;
 }
 .timer__controls {
   padding: 3px;
   display: flex;
-  cursor: pointer;
-  font-size: 1.5em;
-  -webkit-user-select: none;
+  font-size: 1em;
   justify-content: space-between;
-}
-.timer__controls__startstop .stop {
-  font-family: u2000;
 }

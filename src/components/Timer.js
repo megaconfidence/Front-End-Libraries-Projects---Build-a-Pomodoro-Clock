@@ -1,17 +1,18 @@
 import React from 'react';
 
-const Timer = ({ reset, time, startStop, isBreak }) => {
+const Timer = ({ reset, time, startStop, isBreak, isRunning }) => {
   const clockify = () => {
     let minutes = Math.floor(time / 60);
     let seconds = time - minutes * 60;
     seconds = seconds < 10 ? '0' + seconds : seconds;
     minutes = minutes < 10 ? '0' + minutes : minutes;
     return minutes + ':' + seconds;
+
   };
   return (
     <div className='timer'>
       <div className='timer__label' id='timer-label'>
-        {!isBreak? 'Break': 'Session'}
+        {!isBreak ? 'Time for a break!' : 'Be Productive!'}
       </div>
       <div className='timer__display' id='time-left'>
         {clockify()}
@@ -23,13 +24,10 @@ const Timer = ({ reset, time, startStop, isBreak }) => {
           id='start_stop'
           onClick={startStop}
         >
-          &#9654;/
-          <span className='stop' style={{ fontFamily: 'u2000' }}>
-            &#9208;
-          </span>
+          {isRunning ? 'Stop' : 'Start'}
         </div>
         <div className='timer__controls__reset' id='reset' onClick={reset}>
-          &#8634;
+          Reset
         </div>
       </div>
     </div>
