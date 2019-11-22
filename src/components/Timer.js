@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Timer = ({ reset, time, startStop }) => {
+const Timer = ({ reset, time, startStop, isBreak }) => {
   const clockify = () => {
     let minutes = Math.floor(time / 60);
     let seconds = time - minutes * 60;
@@ -11,7 +11,7 @@ const Timer = ({ reset, time, startStop }) => {
   return (
     <div className='timer'>
       <div className='timer__label' id='timer-label'>
-        {time === 0? 'Break Time':'Session'}
+        {!isBreak? 'Break': 'Session'}
       </div>
       <div className='timer__display' id='time-left'>
         {clockify()}

@@ -1,41 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import BreakLength from './components/BreakLength';
 import SessionLength from './components/SessionLength';
 import Timer from './components/Timer';
 
-let intervalId;
-
 function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [sessionLength, setSessionLength] = useState(25);
+  // const [time, setTime] = useState(5);
   const [time, setTime] = useState(1500);
   const [isTimeStopped, setIsTimeStopped] = useState(false);
-  const [isBreak, setIsBreak] = useState(false);
+  const [isBreak, setIsBreak] = useState(true);
+  const [delay, setDelay] = useState(null);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  const audioEle = useRef();
 
   const handleBreakClick = e => {
-    const id = e.target.id.split('-')[1];
-    if (id === 'increment') {
-      if (breakLength < 60) {
-        setBreakLength(breakLength => breakLength + 1);
-      }
-    } else {
-      if (breakLength > 1) {
-        setBreakLength(breakLength => breakLength - 1);
+    if (!isTimerRunning) {
+      const id = e.target.id.split('-')[1];
+      if (id === 'increment') {
+        if (breakLength < 60) {
+          setBreakLength(breakLength => breakLength + 1);
+        }
+      } else {
+        if (breakLength > 1) {
+          setBreakLength(breakLength => breakLength - 1);
+        }
       }
     }
   };
   const handleSessionClick = e => {
-    const id = e.target.id.split('-')[1];
-    if (id === 'increment') {
-      if (sessionLength < 60) {
-        setSessionLength(sessionLength => sessionLength + 1);
-        setTime((sessionLength + 1) * 60);
-      }
-    } else {
-      if (sessionLength > 1) {
-        setSessionLength(sessionLength => sessionLength - 1);
-        setTime((sessionLength - 1) * 60);
+    if (!isTimerRunning) {
+      const id = e.target.id.split('-')[1];
+      if (id === 'increment') {
+        if (sessionLength < 60) {
+          setSessionLength(sessionLength => sessionLength + 1);
+          setTime((sessionLength + 1) * 60);
+        }
+      } else {
+        if (sessionLength > 1) {
+          setSessionLength(sessionLength => sessionLength - 1);
+          setTime((sessionLength - 1) * 60);
+        }
       }
     }
   };
@@ -44,49 +51,62 @@ function App() {
     setSessionLength(25);
     setTime(1500);
     setIsTimeStopped(false);
-    clearInterval(intervalId);
+    setDelay(null);
+    setIsBreak(true);
+    setIsTimerRunning(false);
+    audioEle.current.pause();
+    audioEle.current.currentTime = 0;
+  };
+  const useInterval = (callback, delay) => {
+    const savedCallback = useRef();
+
+    // Remember the latest callback.
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  };
+  useInterval(() => {
+    if (time === 0) {
+      setDelay(null);
+      setIsBreak(isBreak => !isBreak);
+      swapTime();
+    } else {
+      setTime(time => time - 1);
+    }
+  }, delay);
+
+  const swapTime = () => {
+    audioEle.current.play();
+
+    if (isBreak) {
+      console.log(`it's break time`);
+      setTime(breakLength * 60);
+      setDelay(1000);
+    } else {
+      console.log(`it's not break time`);
+      setTime(sessionLength * 60);
+      setDelay(1000);
+    }
   };
 
   const handleStartStop = e => {
-    let locatTime = time;
-    setIsTimeStopped(!isTimeStopped);
+    setIsTimerRunning(isTimerRunning => !isTimerRunning);
+    setIsTimeStopped(isTimeStopped => !isTimeStopped);
     if (isTimeStopped) {
-      clearInterval(intervalId);
+      setDelay(null);
     } else {
-      intervalId = setInterval(() => {
-        // locatTime -= 1;
-        // console.log(locatTime);
-        // if (locatTime === 0) {
-        //   console.log(isBreak);
-        //   setIsBreak(isBreak => !isBreak);
-        //   console.log(isBreak);
-        //   if (isBreak) {
-        //     console.log('it is break time');
-        //     setTemp('lorem 4 ipsum')
-        //   } else {
-        //     console.log('it not break time');
-        //     setTemp('whatever')
-        //   }
-        //   // setTimeout(() => {}, 2000);
-        // } else {
-        //   setTime(time => time - 1);
-        // }
-
-        setTime(time => {
-          if (isBreak) {
-            console.log('this ran')
-            setIsBreak(isBreak => !isBreak);
-            return sessionLength*60;
-          } else {
-            if (time === 0) {
-              setIsBreak(isBreak => !isBreak);
-              return breakLength*60;
-            } else {
-              return time - 1;
-            }
-          }
-        });
-      }, 1000);
+      setDelay(1000);
     }
   };
 
@@ -97,8 +117,19 @@ function App() {
         <SessionLength length={sessionLength} onClick={handleSessionClick} />
       </div>
       <div className='app__timer'>
-        <Timer reset={handleReset} time={time} startStop={handleStartStop} />
+        <Timer
+          reset={handleReset}
+          time={time}
+          startStop={handleStartStop}
+          isBreak={isBreak}
+        />
       </div>
+      <audio
+        id='beep'
+        preload='auto'
+        src='https://goo.gl/65cBl1'
+        ref={audioEle}
+      />
     </div>
   );
 }
